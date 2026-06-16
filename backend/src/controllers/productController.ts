@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import db from '../db';
+import db from '../db/index.js';
+import { Product } from '../models/types.js';
 
 export const getProducts = (req: Request, res: Response) => {
   const { category, minPrice, maxPrice, q, limit = 10, offset = 0 } = req.query;
@@ -31,8 +32,8 @@ export const getProducts = (req: Request, res: Response) => {
   params.push(Number(limit), Number(offset));
 
   try {
-    const products = db.prepare(query).all(...params);
-    const total = db.prepare('SELECT COUNT(*) as count FROM products').get() as any;
+    const products = db.prepare(query).all(...params) as Product[];
+    const total = db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number };
     
     res.json({
       data: products,
@@ -51,7 +52,7 @@ export const getProductById = (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const product = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
+    const product = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as Product | undefined;
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }

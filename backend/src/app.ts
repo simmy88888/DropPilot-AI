@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import productRoutes from './routes/productRoutes';
-import authRoutes from './routes/authRoutes';
-import trendRoutes from './routes/trendRoutes';
-import competitorRoutes from './routes/competitorRoutes';
-import supplierRoutes from './routes/supplierRoutes';
-import performanceRoutes from './routes/performanceRoutes';
+import productRoutes from './routes/productRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import trendRoutes from './routes/trendRoutes.js';
+import competitorRoutes from './routes/competitorRoutes.js';
+import supplierRoutes from './routes/supplierRoutes.js';
+import performanceRoutes from './routes/performanceRoutes.js';
 
 dotenv.config();
 

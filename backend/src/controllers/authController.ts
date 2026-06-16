@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db from '../db';
+import db from '../db/index.js';
+import { User } from '../models/types.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -28,7 +29,7 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined;
 
     if (!user || !(await bcrypt.compare(password, user.password_hash))) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -44,7 +45,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const getMe = async (req: any, res: Response) => {
   try {
-    const user = db.prepare('SELECT id, email, name, role FROM users WHERE id = ?').get(req.user.id) as any;
+    const user = db.prepare('SELECT id, email, name, role FROM users WHERE id = ?').get(req.user.id) as Omit<User, 'password_hash'> | undefined;
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

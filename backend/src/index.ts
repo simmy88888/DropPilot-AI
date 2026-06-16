@@ -1,5 +1,5 @@
-import app from './app';
-import { initDb } from './db';
+import app from './app.js';
+import { initDb } from './db/index.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 

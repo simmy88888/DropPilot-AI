@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProduct = exports.getProductById = exports.getProducts = void 0;
-const db_1 = __importDefault(require("../db"));
+const index_js_1 = __importDefault(require("../db/index.js"));
 const getProducts = (req, res) => {
     const { category, minPrice, maxPrice, q, limit = 10, offset = 0 } = req.query;
     let query = 'SELECT * FROM products WHERE 1=1';
@@ -28,8 +28,8 @@ const getProducts = (req, res) => {
     query += ' LIMIT ? OFFSET ?';
     params.push(Number(limit), Number(offset));
     try {
-        const products = db_1.default.prepare(query).all(...params);
-        const total = db_1.default.prepare('SELECT COUNT(*) as count FROM products').get();
+        const products = index_js_1.default.prepare(query).all(...params);
+        const total = index_js_1.default.prepare('SELECT COUNT(*) as count FROM products').get();
         res.json({
             data: products,
             pagination: {
@@ -47,7 +47,7 @@ exports.getProducts = getProducts;
 const getProductById = (req, res) => {
     const { id } = req.params;
     try {
-        const product = db_1.default.prepare('SELECT * FROM products WHERE id = ?').get(id);
+        const product = index_js_1.default.prepare('SELECT * FROM products WHERE id = ?').get(id);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
@@ -61,7 +61,7 @@ exports.getProductById = getProductById;
 const createProduct = (req, res) => {
     const { name, description, category, price, cost, supplier_id, image_url } = req.body;
     try {
-        const stmt = db_1.default.prepare(`
+        const stmt = index_js_1.default.prepare(`
       INSERT INTO products (name, description, category, price, cost, supplier_id, image_url)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
